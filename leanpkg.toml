@@ -1,0 +1,8 @@
+[package]
+name = "thomas_paper"
+version = "0.1"
+lean_version = "leanprover-community/lean:3.42.1"
+path = "src"
+
+[dependencies]
+mathlib = {git = "https://github.com/leanprover-community/mathlib", rev = "0d762850ad26d4ad499ba0fa3cf9e3ca4ffc65d2"}
