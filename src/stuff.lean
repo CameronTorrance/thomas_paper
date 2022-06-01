@@ -1,7 +1,7 @@
 import ring_theory.tensor_product
 import algebra.algebra.bilinear
 
-open_locale tensor_product
+open_locale tensor_product 
 
 universes ur uc
 
@@ -249,6 +249,11 @@ class bialgebra (R : Type*) [comm_semiring R] (B : Type*) [ring B] [algebra R B]
 (comul_one : comul 1 = 1)
 (comul_mul : ∀ x y : B,  comul (x * y) = (comul x) * (comul y))
 
-class hopf_algebra (H : Type*) [ring H] {R : Type*} [comm_semiring R] [algebra R H] extends
+class hopf_algebra (R : Type*) [comm_semiring R](H : Type*) [ring H] [algebra R H] extends
   bialgebra R H :=
 (id_unit : is_unit (linear_map.id : coalgebra.conv_alg R H H))
+
+namespace hopf_algebra
+
+
+end hopf_algebra
