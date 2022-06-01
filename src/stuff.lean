@@ -1,3 +1,4 @@
+import ring_theory.tensor_product
 import algebra.algebra.bilinear
 
 open_locale tensor_product
@@ -55,17 +56,18 @@ namespace algebra
   vector spaces.
 -/
 
-lemma lmul'_assoc : (lmul' R : A ⊗ A →ₗ[R] A) ∘ₗ (tensor_product.map (lmul' R) 
+lemma lmul'_assoc : (lmul' R : A ⊗ A →ₗ[R] A) ∘ₗ (_root_.tensor_product.map (lmul' R) 
   (linear_map.id : A →ₗ[R] A)) = (lmul' R : A ⊗ A →ₗ[R] A) ∘ₗ
-  (tensor_product.map linear_map.id (lmul' R)) ∘ₗ ↑(tensor_product.assoc R A A A) :=
+  (_root_.tensor_product.map linear_map.id (lmul' R)) ∘ₗ ↑(_root_.tensor_product.assoc R A A A) :=
 begin
   apply tensor_product.ext',
   intros xy z,
   apply tensor_product.induction_on xy,
   { simp only [tensor_product.zero_tmul, map_zero] },
   { intros x y,
-    simp only [mul_assoc, linear_map.coe_comp, function.comp_app, tensor_product.map_tmul, 
-      lmul'_apply, linear_map.id_coe, id.def, linear_equiv.coe_coe, tensor_product.assoc_tmul] },
+    simp only[ mul_assoc, linear_map.coe_comp, function.comp_app,_root_.tensor_product.map_tmul, 
+      lmul'_apply, linear_map.id_coe, id.def, linear_equiv.coe_coe, 
+      _root_.tensor_product.assoc_tmul, eq_self_iff_true] },
   { simp only [tensor_product.add_tmul, linear_map.coe_comp, function.comp_app, 
       tensor_product.map_tmul, linear_map.id_coe, id.def, lmul'_apply, linear_equiv.coe_coe, map_add],
     intros x y hx hy,
@@ -73,11 +75,13 @@ begin
 end
 
 lemma algebra_map_id_left : (lmul' R : A ⊗ A →ₗ[R] A) ∘ₗ 
-  (tensor_product.map (algebra.linear_map R A) linear_map.id) = ↑(tensor_product.lid R A) := 
+  (_root_.tensor_product.map (algebra.linear_map R A) linear_map.id) = 
+  ↑(_root_.tensor_product.lid R A) := 
 by apply tensor_product.ext'; simp[algebra.smul_def]
 
 lemma algebra_map_id_right : (lmul' R : A ⊗ A →ₗ[R] A) ∘ₗ 
-  (tensor_product.map linear_map.id (algebra.linear_map R A) ) = ↑(tensor_product.rid R A) := 
+  (_root_.tensor_product.map linear_map.id (algebra.linear_map R A) ) = 
+  ↑(_root_.tensor_product.rid R A) := 
 by apply tensor_product.ext'; simp[← algebra.commutes, algebra.smul_def]
 
 end algebra
@@ -218,7 +222,7 @@ begin
   { simp only [tensor_product.map_smul_left, linear_map.comp_smul, linear_map.smul_comp, mul_def,
      eq_self_iff_true, forall_const] },
   { simp only [tensor_product.map_smul_right, linear_map.comp_smul, linear_map.smul_comp, mul_def,
-     eq_self_iff_true, forall_const] }
+    eq_self_iff_true, forall_const] }
 end
 
 end conv_alg
@@ -237,3 +241,14 @@ notation A ` →ᶜ[`:25 R `] ` B := coalg_hom R A B
 namespace coalg_hom
 
 end coalg_hom
+
+class bialgebra (R : Type*) [comm_semiring R] (B : Type*) [ring B] [algebra R B] extends 
+  coalgebra R B :=
+(counit_one : counit 1 = 1)
+(counit_mul : ∀ x y : B, counit (x * y) = (counit x) * (counit y))
+(comul_one : comul 1 = 1)
+(comul_mul : ∀ x y : B,  comul (x * y) = (comul x) * (comul y))
+
+class hopf_algebra (H : Type*) [ring H] {R : Type*} [comm_semiring R] [algebra R H] extends
+  bialgebra R H :=
+(id_unit : is_unit (linear_map.id : coalgebra.conv_alg R H H))
